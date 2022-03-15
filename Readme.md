@@ -30,6 +30,6 @@
 ## 4. 如何编译
 首先需要 pyinstaller,可以通过 `sudo pip3 install pyinstaller` 进行安装
 
-在`code`目录下, 输入`pyinstaller -F wubox.py -n wubox`
+在`code`目录下, 输入`pyinstaller -F wubox.py -n wubox --distpath .`
 
-成功打包后即可在`\code\dist`下找到`wubox`可执行程序
+成功打包后即可在`\code`下找到`wubox`可执行程序
