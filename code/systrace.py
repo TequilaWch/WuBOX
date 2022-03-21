@@ -3,7 +3,7 @@
 #
 #
 # Copyright (c) 2022 Wu Changhao
-
+from sys import exit
 from bcc import BPF
 
 #   全局BCC program
