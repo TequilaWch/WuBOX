@@ -150,8 +150,9 @@ def systrace(sysname, times, ret=False):
 
     else:
         fnname = b.get_syscall_fnname(sysname)   # 待解决
-
+        
         b.attach_kprobe(event = fnname, fn_name = "trace_syscall")
+        
 
         print("%-6s %-18s %-16s %-6s %-24s" % ("COUNT", "TIME(s)", "COMM", "PID", "FILE"))
 
@@ -166,6 +167,6 @@ def systrace(sysname, times, ret=False):
 
    
 if __name__ == "__main__":
-    systrace("mkdir", 30)
+    systrace("read", 10)
 
 
