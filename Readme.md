@@ -15,21 +15,17 @@
 
 
 ## 2. 程序架构
-- main.py 程序的入口，万物的起源。接收输入并切换模式。
-- systrace.py 当然是trace syscall
-- apptrace.py 跟踪特定app行为
-
-## 3. 开发预期
-- [ ] 增加用户态与内核态模式
-- [x] 增加入口追踪与返回追踪
-- [ ] 增加分析能力
-- [x] 增加次数控制
-- [ ] more...
+- wubox.py 程序的入口，万物的起源。接收输入并切换模式。
+- ~~systrace.py 当然是trace syscall~~在古早版本中，你可以找到这部分内容，但最终由于优化考虑和方向考虑，这一块内容被精简掉了
+- apptrace.py 跟踪特定app
 
 
-## 4. 如何编译
+## 3. 如何编译
 首先需要 pyinstaller,可以通过 `sudo pip3 install pyinstaller` 进行安装
 
 在`code`目录下, 输入`pyinstaller -F wubox.py -n wubox --distpath .`
 
 成功打包后即可在`\code`下找到`wubox`可执行程序
+
+## 4. 如何使用
+`$ sudo ./wubox -h`获取帮助信息
