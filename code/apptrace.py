@@ -10,6 +10,10 @@ from sys import exit
 from bcc import BPF
 import argparse
 
+import numpy as np
+import os
+import pandas as pd
+
 prog1 = """
 #include <uapi/linux/limits.h>
 #include <linux/sched.h>
@@ -229,8 +233,8 @@ def print_event(cpu, data, size):
     
     counts[calls.index(event.syscallname.decode("utf-8"))] += 1
 
-    print("%-18.9f %-16s %-6d %-24s %-8s" % (time_s, event.command.decode("utf-8"),
-     event.pid, event.filename.decode("utf-8"), event.syscallname.decode("utf-8")))
+    # print("%-18.9f %-16s %-6d %-24s %-8s" % (time_s, event.command.decode("utf-8"),
+    #  event.pid, event.filename.decode("utf-8"), event.syscallname.decode("utf-8")))
     
 
 def app_trace(name, times):
@@ -267,7 +271,7 @@ def app_trace(name, times):
     b.attach_kprobe(event = recvf,  fn_name = "trace_recvfrom")
     b.attach_kprobe(event = fork,   fn_name = "trace_fork")
 
-    print("%-18s %-16s %-6s %-24s %-8s" % ("TIME(s)", "COMM", "PID", "FILE", "SYSCALL"))
+    # print("%-18s %-16s %-6s %-24s %-8s" % ("TIME(s)", "COMM", "PID", "FILE", "SYSCALL"))
 
     b["sysevents"].open_perf_buffer(print_event)
 
@@ -290,7 +294,18 @@ def app_trace(name, times):
         print("%-10s" % counts[countsoutput], end="")
         countsoutput += 1
     print("")
+    csvname = name+'.csv'
+    if os.path.exists(csvname):
+        tmp = pd.DataFrame(data = np.array(counts).reshape(1,len(calls)))
+        tmp.to_csv(csvname, mode='a', header=False)
+    else:
+        tmp = pd.DataFrame(columns = calls, data = np.array(counts).reshape(1,len(calls)))
+        tmp.to_csv(csvname)
 
 
 if __name__ == "__main__":
-    app_trace("code", 10000)
+    i = 0
+    while(i<5):
+        app_trace("code", 1000)
+        counts = [0,0,0,0,0,0,0,0,0,0,0]   
+        i += 1
