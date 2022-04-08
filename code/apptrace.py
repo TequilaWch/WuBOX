@@ -220,7 +220,7 @@ int trace_fork(struct pt_regs *ctx, int dfd, const char __user *filename, int fl
 b = BPF(text="")
 
 start = 0
-calls = ["read","write","execve","open","close","socket","connect","accept","sendto","recvfrom","fork"]
+calls = ["execve","fork","read","write","open","close","socket","connect","accept","sendto","recvfrom"]
 counts = [0,0,0,0,0,0,0,0,0,0,0]   
 
 
