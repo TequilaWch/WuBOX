@@ -1,0 +1,5 @@
+spec 使用这个./bin/runcpu -c wu.cfg -a run --output_format pdf -i test -n 1 --noreportable 603
+wu.cfg 配置文件 test数据集 单次1次实验
+除了超过配置的speed类都跑了
+
+还差parser和YCSB

@@ -216,29 +216,33 @@ int trace_fork(struct pt_regs *ctx, int dfd, const char __user *filename, int fl
 b = BPF(text="")
 
 start = 0
-calls = ["read","write","execve","open","close","socket","connect","accept","sendto","recvfrom","fork"]
+calls = ["fork","execve","read","write","open","close","socket","connect","accept","sendto","recvfrom"]
 counts = [0,0,0,0,0,0,0,0,0,0,0]   
 
 
 def print_event(cpu, data, size):
     global start, calls, counts
     event = b["sysevents"].event(data)
-    if start == 0:
-        start = event.ts
-    time_s = (float(event.ts - start)) / 1000000000
+    # if start == 0:
+    #     start = event.ts
+    # time_s = (float(event.ts - start)) / 1000000000
     
     counts[calls.index(event.syscallname.decode("utf-8"))] += 1
 
-    print("%-18.9f %-16s %-6d %-24s %-8s" % (time_s, event.command.decode("utf-8"),
-     event.pid, event.filename.decode("utf-8"), event.syscallname.decode("utf-8")))
+    # print("%-18.9f %-16s %-6d %-24s %-8s" % (time_s, event.command.decode("utf-8"),
+    #  event.pid, event.filename.decode("utf-8"), event.syscallname.decode("utf-8")))
     
 
 def app_trace(name, times):
     global prog1
     global b
 
+    # prog1 = prog1.replace('FILENAME_FILTER',
+    #     'if (memcmp(evt.command, \"%s\", %d) != 0) { return 0; }' % (name, len(name)))
+
     prog1 = prog1.replace('FILENAME_FILTER',
-        'if (memcmp(evt.command, \"%s\", %d) != 0) { return 0; }' % (name, len(name)))
+         'char *temp = \"%s\";for(int i = 0;i < %d; i++){if (evt.command[i] != temp[i]) {return 0;}}' % (name, len(name)))
+    
 
     read = b.get_syscall_fnname("read")
     write = b.get_syscall_fnname("write")
@@ -267,18 +271,21 @@ def app_trace(name, times):
     b.attach_kprobe(event = recvf,  fn_name = "trace_recvfrom")
     b.attach_kprobe(event = fork,   fn_name = "trace_fork")
 
-    print("%-18s %-16s %-6s %-24s %-8s" % ("TIME(s)", "COMM", "PID", "FILE", "SYSCALL"))
+    # print("%-18s %-16s %-6s %-24s %-8s" % ("TIME(s)", "COMM", "PID", "FILE", "SYSCALL"))
 
     b["sysevents"].open_perf_buffer(print_event)
 
     i = 0
-    while (i < times):
-        try:
-            i += 1
-            b.perf_buffer_poll()
-        except KeyboardInterrupt:
-            print("Interrupted by Keyboard Input")
-            
+    while True:
+        try:    
+            try:
+                i += 1
+                b.perf_buffer_poll()
+            except KeyboardInterrupt:
+                print("Interrupted by Keyboard Input")
+        except:
+            break
+                
     print("------------------------------------------------统计信息------------------------------------------------")
     callsoutput = 0
     while callsoutput < len(calls):
@@ -293,4 +300,4 @@ def app_trace(name, times):
 
 
 if __name__ == "__main__":
-    app_trace("code", 10000)
+    app_trace("cc1", 10000)
