@@ -56,7 +56,7 @@ if args.appname:
         times = int(times) 
     else:
         times = TIMES_DEFAULT
-    app_trace(appname, times)
+    app_whitelist(appname, times)
 
 
 

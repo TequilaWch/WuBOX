@@ -1,0 +1,9 @@
+,fork,execve,read,write,open,close,socket,connect,accept,send,recv,type
+0,0,31,3298,2589,2317,1765,0,0,0,0,0,perlbench_r
+1,0,93,3243,712,3870,2082,0,0,0,0,0,perlbench_r
+2,0,53,3116,890,3476,2465,0,0,0,0,0,perlbench_r
+3,0,19,4414,4320,803,444,0,0,0,0,0,perlbench_r
+4,0,5,4884,4748,229,134,0,0,0,0,0,perlbench_r
+5,0,3,4861,4834,180,122,0,0,0,0,0,perlbench_r
+6,0,2,4934,4861,120,83,0,0,0,0,0,perlbench_r
+7,0,61,4030,1825,2611,1473,0,0,0,0,0,perlbench_r
