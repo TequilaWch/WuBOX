@@ -9,82 +9,72 @@ import os
 import sys
 import argparse
 from datetime import datetime, timedelta
+from KNN import *
+from apptrace import *
+# from systrace import *
 
-# from apptrace import *
-from systrace import *
-
-TIMES_DEFAULT = 25
+TIMES_DEFAULT = 5000
+TIMES_MAX = 1000000
 
 wuboxinfo = """
-    WuBOX, trace specific syscall or application
+    WuBOX, trace specific application
             For Linux, uses BCC, eBPF. Embedded C.
 
     You can using 'wubox -h' to get help
 
-
     Copyright (c) 2022 Wu Changhao, only for study
 """
-
-errorinfo1 = """
-    Too many/few parameters, you may try using 'wubox -h' to get help
-"""
-
-errorinfo2 = """
-    Wrong parameters, you may try using 'wubox -h' to get help
-"""
-
+ 
 examples = """examples:
-    ./wubox                             # print wubox info
-    ./wubox -h                          # print wubox manual
-    ./wubox -s [-r] open [100]          # trace all open() syscall_enter[return] for [100] times
-    ./wubox -a wubox                    # trace all wubox does
+    ./wubox -a [-r] perlbench   # trace perlbench(must have a pkl), r is confidence range (default 50) 
+    ./wubox -w perlbench        # add perlbench to whitelist
+    ./wubox -g a                # generate whitelist packle in WUBOX\\whitelist\\model\\ as whitelist.pkl, a is not important   
 """
 
-def output(args):
-    a = len(args)
-    if args[1] == "-h":                 # 输出帮助
-        print(examples)
-    elif args[1] == "-s":               # 追踪syscall -s
-        if args[2] == "-r":              # -s -r 
-            if a == 5:                  # -s -r syscall times
-                systrace(args[3], args[4], ret=True)
-            elif a == 4:                # -s -r syscall
-                systrace(args[3], TIMES_DEFAULT, ret=True)
-        elif a == 4:                    # -s syscall times
-            systrace(args[2], args[3])
-        elif a == 3:                    # -s syscall
-            systrace(args[2], TIMES_DEFAULT)
-        else:                           # error too many/few
-            print(errorinfo1)
-    elif args[1] == "-a": # 追踪application
-        pass
-    else:
-        print(errorinfo2)
 
-    # if args[1] == "-h":
-    #     print(examples)
-    # elif len(args) == 3:
-    #     if args[1] == "-s":
-    #         # print(args[1],": ",args[2])
-    #         systrace(args[2], 10)
-    #     elif args[1] == "-a":
-    #         print(args[1],": ",args[2])
-    #         # apptrace(args[2])
-    #     else:
-    #         print(errorinfo2)
-    #         return
-    # elif len(args) > 3:
-    #     print(errorinfo1)
-    #     return
-    # else:
-    #     print(errorinfo2)
-    #     return
+parser = argparse.ArgumentParser(
+    prog="WuBOX",
+    description=wuboxinfo,
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    epilog=examples)
+
+parser.add_argument("-a","--appname",
+    help="trace this application")
+parser.add_argument("-r","--range",
+    help="set confidence range(only can be used with -a ,default 200)")
+# parser.add_argument("-t", "--times",
+#     help="trace t times")
+parser.add_argument("-w", "--whitelist",
+    help="add the app to whitelist")
+parser.add_argument("-g", "--generate",
+    help="generate whitelist model")
+
+appname = ""
+times = TIMES_DEFAULT
+args = parser.parse_args()
+# print(args)
+if args.appname:
+    d = 50
+    if args.whitelist or args.generate:
+        print("Error: You can only use on parse at one time")
+        sys.exit()
+    if args.range:
+        d = args.range
+    appname = args.appname
+    app_trace(appname, int(d))
+elif args.whitelist:
+    if args.appname or args.generate or args.range:
+        print("Error: You can only use on parse at one time")
+        sys.exit()
+    appname = args.whitelist     
+    app_whitelist(appname)
+elif args.generate:
+    if args.whitelist or args.appname or args.range:
+        print("Error: You can only use on parse at one time")
+        sys.exit()   
+    kNNgen()
+else:
+    print("Error: You may input no parse or a wrong parse")
+    sys.exit()   
 
 
-
-if __name__ == "__main__":
-
-    if len(sys.argv) > 1:
-        output(sys.argv)
-    elif len(sys.argv) == 1:    # 没有输入参数
-        print(wuboxinfo)

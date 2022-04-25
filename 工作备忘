@@ -1,0 +1,46 @@
+spec cpu2017   /opt/spec2017
+
+parsec downloads parsec-3.0
+YCSB ~/ycsb-0.15.0$
+
+对以上三个程序的测试程序手动跑
+
+ycsb用py2
+
+同时记录测试集在程序开启和未开启时的速度表现
+以及根据记录的系统调用使用情况对他分个类
+要死
+spec 使用这个./bin/runcpu -c wu.cfg -a run --output_format pdf -i test -n 1 --noreportable 603
+wu.cfg 配置文件 test数据集 单次1次实验
+除了超过配置的speed类都跑了
+
+先启动mongo ，配置workload
+YCSB  python2 bin/ycsb load mongodb -threads 100 -P workloads/workloada
+虽然奇怪，但跑完了
+
+parsec  :downloads 下 first source env.sh
+parsecmgmt -a run -p blackscholes -i native # -i 是输入参数，输入有test ,simdev ,simlarge ,native ,...
+
+blackscholes 
+canneal
+dedup
+fluidanimate
+freqmine
+raytrace
+streamcluster
+
+先验学习并设置白名单，
+在线分析，
+截取长度应该一致
+
+改用ringbuf,二维列表(over)
+
+KNN
+
+
+
+
+
+
+
+选择一系列当白名单，每个跑20次

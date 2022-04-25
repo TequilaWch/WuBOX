@@ -1,0 +1,19 @@
+{
+    "update.enableWindowsBackgroundUpdates": true,
+    "background.customImages": [
+        "file:home/wch/Desktop/wallpaper/pokemon.png"//图片地址
+    ],
+    "background.style": {
+        "content":"''",
+        "pointer-events":"none",
+        "position":"absolute",
+        "width":"100%",
+        "height":"100%",
+        "z-index":"99999",
+        "background.repeat":"no-repeat",
+        "background-size":"100%,100%",//图片百分比
+        "opacity":0.2 //图片透明度
+    },
+    "background.useFront": true,
+    "background.useDefault": false,
+}
