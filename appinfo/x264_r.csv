@@ -1,0 +1,3 @@
+fork,execve,read,write,open,close,socket,connect,accept,send,recv
+0,0,686,773,35,6,0,0,0,0,0
+0,0,96,1120,3,5,0,0,0,0,0

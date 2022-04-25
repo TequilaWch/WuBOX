@@ -9,7 +9,7 @@ import os
 import sys
 import argparse
 from datetime import datetime, timedelta
-
+from KNN import *
 from apptrace import *
 # from systrace import *
 
@@ -26,10 +26,9 @@ wuboxinfo = """
 """
  
 examples = """examples:
-    ./wubox wubox                    # trace wubox 
-    ./wubox code -t 100              # trace code for 100 polling
-    ./wubox code -t max              # trace code for 10^6 polling, (warning)
-    ./wubox -h                       # help infomation    
+    ./wubox -a [-r] perlbench   # trace perlbench(must have a pkl), r is confidence range (default 50) 
+    ./wubox -w perlbench        # add perlbench to whitelist
+    ./wubox -g a                # generate whitelist packle in WUBOX\\whitelist\\model\\ as whitelist.pkl, a is not important   
 """
 
 
@@ -39,24 +38,43 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog=examples)
 
-parser.add_argument("appname",
+parser.add_argument("-a","--appname",
     help="trace this application")
-parser.add_argument("-t", "--times",
-    help="trace t times")
+parser.add_argument("-r","--range",
+    help="set confidence range(only can be used with -a ,default 200)")
+# parser.add_argument("-t", "--times",
+#     help="trace t times")
+parser.add_argument("-w", "--whitelist",
+    help="add the app to whitelist")
+parser.add_argument("-g", "--generate",
+    help="generate whitelist model")
 
 appname = ""
 times = TIMES_DEFAULT
 args = parser.parse_args()
+# print(args)
 if args.appname:
+    d = 50
+    if args.whitelist or args.generate:
+        print("Error: You can only use on parse at one time")
+        sys.exit()
+    if args.range:
+        d = args.range
     appname = args.appname
-    if args.times:
-        times = args.times
-        if times == "max":
-            times = TIMES_MAX
-        times = int(times) 
-    else:
-        times = TIMES_DEFAULT
-    app_whitelist(appname, times)
-
+    app_trace(appname, int(d))
+elif args.whitelist:
+    if args.appname or args.generate or args.range:
+        print("Error: You can only use on parse at one time")
+        sys.exit()
+    appname = args.whitelist     
+    app_whitelist(appname)
+elif args.generate:
+    if args.whitelist or args.appname or args.range:
+        print("Error: You can only use on parse at one time")
+        sys.exit()   
+    kNNgen()
+else:
+    print("Error: You may input no parse or a wrong parse")
+    sys.exit()   
 
 

@@ -14,10 +14,13 @@ spec 使用这个./bin/runcpu -c wu.cfg -a run --output_format pdf -i test -n 1 
 wu.cfg 配置文件 test数据集 单次1次实验
 除了超过配置的speed类都跑了
 
-YCSB bin/ycsb load mongodb -threads 100 -P workloads/workloada
+先启动mongo ，配置workload
+YCSB  python2 bin/ycsb load mongodb -threads 100 -P workloads/workloada
 虽然奇怪，但跑完了
 
-parsec  : first source env.sh
+parsec  :downloads 下 first source env.sh
+parsecmgmt -a run -p blackscholes -i native # -i 是输入参数，输入有test ,simdev ,simlarge ,native ,...
+
 blackscholes 
 canneal
 dedup
@@ -33,3 +36,11 @@ streamcluster
 改用ringbuf,二维列表(over)
 
 KNN
+
+
+
+
+
+
+
+选择一系列当白名单，每个跑20次
