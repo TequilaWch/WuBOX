@@ -140,7 +140,7 @@ def kNNgen(k=5):
     print("白名单数据种数：%d \t 分别为：" % knum, types)
     print("白名单准确率:" + str(knnmodel.score(X_train, Y_train.ravel().astype('int'))))
     print("白名单被保存于\'WUBOX\\whitelist\\model\\whitelist.pkl\'")
-
+    return data
 def category(point, k = 5, distance = 50, pkl = "whitelist.pkl"):
     # 导入模型并预测
     knn = joblib.load(whitelist_model_dir+pkl) 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     # blacklist = ["../appinfo/blackscholes.csv","../appinfo/rtview.csv","../appinfo/dedup.csv"]
     # black = get_listset(blacklist)
     # print(black)
-    kNNgen()
+    kNNgen(k=5)
     # white = kNNgen()
     # all = pd.concat([white,black],ignore_index=True)
     # showscatter(all)
